@@ -1,0 +1,12 @@
+global:
+  scrape_interval: 15s
+
+scrape_configs:
+  - job_name: fxradar-api
+    metrics_path: /metrics
+    static_configs:
+      - targets: ["api:4000"]
+  - job_name: fxradar-quant-engine
+    metrics_path: /metrics
+    static_configs:
+      - targets: ["quant-engine:5000"]

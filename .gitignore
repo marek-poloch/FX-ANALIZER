@@ -1,21 +1,48 @@
 # Claude Code local settings
 .claude/settings.local.json
 
-# OS
-.DS_Store
-Thumbs.db
+# Env
+.env
+.env.local
+.env.*.local
+
+# Node / pnpm
+node_modules/
+.pnpm-store/
+.next/
+dist/
+build/
+out/
+*.tsbuildinfo
 
 # Python
 __pycache__/
 *.py[cod]
 *.egg-info/
-.env
 venv/
 .venv/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
 
-# Node
-node_modules/
-.npm/
+# OS
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
 
 # Logs
 *.log
+logs/
+
+# Coverage
+coverage/
+.nyc_output/
+
+# Docker
+.docker/

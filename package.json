@@ -1,0 +1,25 @@
+{
+  "name": "fx-whale-radar",
+  "version": "0.1.0",
+  "private": true,
+  "description": "FX Whale Radar — institutional flow monitoring for FX markets",
+  "packageManager": "pnpm@9.0.0",
+  "scripts": {
+    "dev": "pnpm -r --parallel dev",
+    "build": "pnpm -r build",
+    "test": "pnpm -r test",
+    "lint": "pnpm -r lint",
+    "typecheck": "pnpm -r typecheck",
+    "demo": "docker compose --profile demo up --build",
+    "up": "docker compose up --build",
+    "down": "docker compose down"
+  },
+  "devDependencies": {
+    "typescript": "^5.5.0",
+    "prettier": "^3.3.0"
+  },
+  "engines": {
+    "node": ">=20",
+    "pnpm": ">=9"
+  }
+}
