@@ -1,5 +1,12 @@
 # MASTER PROMPT — FX WHALE RADAR
 
+> **Uwaga (2026-04-20):** zakres projektu został rozszerzony do wielorynkowej platformy SaaS
+> z syntetycznym obrazem rynku i architekturą 7 agentów AI. Wiążące wymagania →
+> [`docs/REQUIREMENTS.md`](./docs/REQUIREMENTS.md), architektura agentów →
+> [`docs/AGENTS.md`](./docs/AGENTS.md), roadmapa przejścia → sekcja „Phase 2" w
+> [`docs/ROADMAP.md`](./docs/ROADMAP.md). FX Whale Radar pozostaje pierwszą implementacją
+> domenową (rynek Forex), ale docelowo jest jednym z rynków wewnątrz większej platformy.
+
 Pracuj w Codex jako autonomiczny agent programistyczny. Korzystaj z osobnych etapów pracy, commituj logicznie zmiany, uruchamiaj testy po każdym większym module, pokazuj diff i nie zostawiaj niedziałających importów. Jeżeli repo już istnieje, najpierw przeanalizuj strukturę, potem zaproponuj plan migracji bez niszczenia istniejących plików. Pracuj, wykorzystjąc wiele agentów tak aby nie zkłócali sobie wzajemnie pracy. Zasosuj inteligentną orkiestrację.
 
 # ROLA I CEL
