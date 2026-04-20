@@ -140,6 +140,12 @@ const dict = {
     "timeframe.5d": "5d",
     "timeframe.1w": "1w",
     "timeframe.1mo": "1 mo",
+
+    "liquidity.state.elevated": "Elevated liquidity",
+    "liquidity.state.depressed": "Depressed liquidity",
+    "liquidity.state.normal": "Normal liquidity",
+    "liquidity.priceChange": "Price change",
+    "liquidity.vsBaseline": "vs baseline",
   },
   pl: {
     "brand.name": "Whale Radar",
@@ -262,6 +268,12 @@ const dict = {
     "timeframe.5d": "5d",
     "timeframe.1w": "1t",
     "timeframe.1mo": "1 mies",
+
+    "liquidity.state.elevated": "Zwiększona płynność",
+    "liquidity.state.depressed": "Zmniejszona płynność",
+    "liquidity.state.normal": "Normalna płynność",
+    "liquidity.priceChange": "Zmiana ceny",
+    "liquidity.vsBaseline": "vs normalna",
   },
 } as const;
 
