@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import useSWR from "swr";
 import { apiFetch } from "@/lib/api";
-import { cn, categoryClass, formatPrice } from "@/lib/ui";
+import { cn, categoryClass, formatPrice, formatSymbol } from "@/lib/ui";
 import { getMarketSocket } from "@/lib/ws";
 import { useT } from "@/lib/i18n";
 import type { FlowScore, MarketTick } from "@fxradar/shared-types";
@@ -66,7 +66,7 @@ export default function MarketOverviewPage() {
               const cat = l?.cat ?? r.category;
               return (
                 <tr key={r.symbol} className="hover:bg-panel/50">
-                  <td className="px-3 py-2 font-mono">{r.symbol}</td>
+                  <td className="px-3 py-2 font-mono">{formatSymbol(r.symbol)}</td>
                   <td className="px-3 py-2">{r.description}</td>
                   <td className="px-3 py-2 text-muted">{r.proxyFor}</td>
                   <td className="px-3 py-2 text-right font-mono">{formatPrice(price)}</td>

@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import useSWR from "swr";
 import { apiFetch } from "@/lib/api";
-import { cn, severityClass } from "@/lib/ui";
+import { cn, severityClass, formatSymbol } from "@/lib/ui";
 import { getAlertsSocket } from "@/lib/ws";
 import { useT } from "@/lib/i18n";
 import type { Alert } from "@fxradar/shared-types";
@@ -33,7 +33,7 @@ export default function LiveRadarPage() {
         {alerts.map((a) => (
           <li key={a.id} className={cn("border rounded-md p-3", severityClass(a.severity))}>
             <div className="flex items-baseline gap-3">
-              <span className="font-mono font-semibold">{a.symbol}</span>
+              <span className="font-mono font-semibold">{formatSymbol(a.symbol)}</span>
               <span className="text-xs uppercase">{a.severity}</span>
               <span className="font-mono text-xs">{a.score.toFixed(0)}/100</span>
               <span className="text-xs text-muted ml-auto">{new Date(a.timestamp).toLocaleTimeString()}</span>

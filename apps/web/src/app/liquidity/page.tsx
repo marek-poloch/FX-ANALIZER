@@ -2,6 +2,7 @@
 
 import useSWR from "swr";
 import { apiFetch } from "@/lib/api";
+import { formatSymbol } from "@/lib/ui";
 import { useT } from "@/lib/i18n";
 import type { Instrument, MarketTick } from "@fxradar/shared-types";
 
@@ -32,7 +33,7 @@ function LiquidityCard({ symbol }: { symbol: string }) {
     { refreshInterval: 5000 },
   );
   if (!data || data.length === 0)
-    return <div className="border border-border rounded-md p-3 text-sm text-muted">{symbol} — {t("liquidity.noData")}</div>;
+    return <div className="border border-border rounded-md p-3 text-sm text-muted">{formatSymbol(symbol)} — {t("liquidity.noData")}</div>;
 
   const prices = data.map((t) => t.price);
   const high = Math.max(...prices);
@@ -43,7 +44,7 @@ function LiquidityCard({ symbol }: { symbol: string }) {
   return (
     <div className="border border-border rounded-md p-3 bg-panel/50">
       <div className="flex items-baseline gap-3">
-        <span className="font-mono font-semibold">{symbol}</span>
+        <span className="font-mono font-semibold">{formatSymbol(symbol)}</span>
         <span className="text-xs text-muted ml-auto">{data.length} {t("liquidity.ticks")}</span>
       </div>
       <div className="grid grid-cols-4 gap-2 mt-2 text-xs">

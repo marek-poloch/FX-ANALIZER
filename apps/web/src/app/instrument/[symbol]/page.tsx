@@ -3,6 +3,7 @@
 import useSWR from "swr";
 import { use } from "react";
 import { apiFetch } from "@/lib/api";
+import { formatSymbol } from "@/lib/ui";
 import { useT } from "@/lib/i18n";
 import type { MarketTick, SentimentSnapshot, CotReport } from "@fxradar/shared-types";
 
@@ -31,7 +32,7 @@ export default function InstrumentDetailPage({ params }: Props) {
 
   return (
     <div>
-      <h1 className="text-2xl font-semibold mb-1 font-mono">{symbol}</h1>
+      <h1 className="text-2xl font-semibold mb-1 font-mono">{formatSymbol(symbol)}</h1>
       <p className="text-sm text-muted mb-4">
         {t("instrument.price")}: {last?.price?.toFixed(5) ?? "—"} · {last?.dataQuality ?? "—"} · {last?.delayStatus ?? "—"}
       </p>

@@ -20,6 +20,17 @@ import type {
   CotReport,
 } from "@fxradar/shared-types";
 
+// CME FX futures → ISO base currency. Kept inline to avoid cross-workspace
+// dependency; mirror of the mapping in apps/web/src/lib/ui.ts.
+const SYMBOL_CURRENCY: Record<string, string> = {
+  "6E": "EUR", "6B": "GBP", "6J": "JPY", "6A": "AUD",
+  "6C": "CAD", "6S": "CHF", "6N": "NZD",
+};
+function formatSymbolForDisplay(symbol: string): string {
+  const ccy = SYMBOL_CURRENCY[symbol];
+  return ccy ? `${symbol} (${ccy})` : symbol;
+}
+
 interface SymbolState {
   volumeEwma: EwmaBaseline;
   volumeRoll: RollingStats;
@@ -183,7 +194,7 @@ export class DemoFeedService implements OnModuleInit, OnModuleDestroy {
       timestamp: tick.timestamp,
       severity,
       score,
-      title: `${severity} flow on ${tick.symbol} (${score.toFixed(0)}/100)`,
+      title: `${severity} flow on ${formatSymbolForDisplay(tick.symbol)} (${score.toFixed(0)}/100)`,
       description: reasons.join(", "),
       explanation,
       dataMode: (process.env.DATA_MODE as DataMode) ?? "demo",
