@@ -5,6 +5,7 @@ import useSWR from "swr";
 import { apiFetch } from "@/lib/api";
 import { cn, categoryClass, formatPrice } from "@/lib/ui";
 import { getMarketSocket } from "@/lib/ws";
+import { useT } from "@/lib/i18n";
 import type { FlowScore, MarketTick } from "@fxradar/shared-types";
 
 type OverviewRow = {
@@ -20,6 +21,7 @@ type OverviewRow = {
 };
 
 export default function MarketOverviewPage() {
+  const { t } = useT();
   const { data, mutate } = useSWR<OverviewRow[]>(
     "/api/market/overview",
     (p: string) => apiFetch<OverviewRow[]>(p),
@@ -41,21 +43,19 @@ export default function MarketOverviewPage() {
 
   return (
     <div>
-      <h1 className="text-2xl font-semibold mb-1">Market Overview</h1>
-      <p className="text-sm text-muted mb-4">
-        CME FX futures proxies · demo mode · not investment advice
-      </p>
+      <h1 className="text-2xl font-semibold mb-1">{t("overview.title")}</h1>
+      <p className="text-sm text-muted mb-4">{t("overview.subtitle")}</p>
       <div className="overflow-x-auto border border-border rounded-lg">
         <table className="w-full text-sm">
           <thead className="bg-panel text-muted text-left">
             <tr>
-              <th className="px-3 py-2">Symbol</th>
-              <th className="px-3 py-2">Description</th>
-              <th className="px-3 py-2">Proxy</th>
-              <th className="px-3 py-2 text-right">Price</th>
-              <th className="px-3 py-2 text-right">Flow Score</th>
-              <th className="px-3 py-2">Category</th>
-              <th className="px-3 py-2">Source</th>
+              <th className="px-3 py-2">{t("overview.col.symbol")}</th>
+              <th className="px-3 py-2">{t("overview.col.description")}</th>
+              <th className="px-3 py-2">{t("overview.col.proxy")}</th>
+              <th className="px-3 py-2 text-right">{t("overview.col.price")}</th>
+              <th className="px-3 py-2 text-right">{t("overview.col.score")}</th>
+              <th className="px-3 py-2">{t("overview.col.category")}</th>
+              <th className="px-3 py-2">{t("overview.col.source")}</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-border">
@@ -79,7 +79,7 @@ export default function MarketOverviewPage() {
               );
             })}
             {!data && (
-              <tr><td className="px-3 py-4 text-muted" colSpan={7}>Loading…</td></tr>
+              <tr><td className="px-3 py-4 text-muted" colSpan={7}>{t("common.loading")}</td></tr>
             )}
           </tbody>
         </table>

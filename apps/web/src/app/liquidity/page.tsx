@@ -2,19 +2,19 @@
 
 import useSWR from "swr";
 import { apiFetch } from "@/lib/api";
+import { useT } from "@/lib/i18n";
 import type { Instrument, MarketTick } from "@fxradar/shared-types";
 
 export default function LiquidityPage() {
+  const { t } = useT();
   const { data: instruments } = useSWR<Instrument[]>("/api/instruments", (p: string) =>
     apiFetch<Instrument[]>(p),
   );
 
   return (
     <div>
-      <h1 className="text-2xl font-semibold mb-1">Liquidity / Levels</h1>
-      <p className="text-sm text-muted mb-4">
-        Session ranges, VWAP, and liquidity sweep candidates. Demo mode shows the last ~500 ticks.
-      </p>
+      <h1 className="text-2xl font-semibold mb-1">{t("liquidity.title")}</h1>
+      <p className="text-sm text-muted mb-4">{t("liquidity.subtitle")}</p>
       <div className="grid md:grid-cols-2 gap-3">
         {(instruments ?? []).map((i) => (
           <LiquidityCard key={i.symbol} symbol={i.symbol} />
@@ -25,13 +25,14 @@ export default function LiquidityPage() {
 }
 
 function LiquidityCard({ symbol }: { symbol: string }) {
+  const { t } = useT();
   const { data } = useSWR<MarketTick[]>(
     `/api/market/${symbol}/ticks?limit=500`,
     (p: string) => apiFetch<MarketTick[]>(p),
     { refreshInterval: 5000 },
   );
   if (!data || data.length === 0)
-    return <div className="border border-border rounded-md p-3 text-sm text-muted">{symbol} — no data</div>;
+    return <div className="border border-border rounded-md p-3 text-sm text-muted">{symbol} — {t("liquidity.noData")}</div>;
 
   const prices = data.map((t) => t.price);
   const high = Math.max(...prices);
@@ -43,13 +44,13 @@ function LiquidityCard({ symbol }: { symbol: string }) {
     <div className="border border-border rounded-md p-3 bg-panel/50">
       <div className="flex items-baseline gap-3">
         <span className="font-mono font-semibold">{symbol}</span>
-        <span className="text-xs text-muted ml-auto">{data.length} ticks</span>
+        <span className="text-xs text-muted ml-auto">{data.length} {t("liquidity.ticks")}</span>
       </div>
       <div className="grid grid-cols-4 gap-2 mt-2 text-xs">
-        <Stat label="Last" value={last.toFixed(5)} />
-        <Stat label="Session High" value={high.toFixed(5)} />
-        <Stat label="Session Low" value={low.toFixed(5)} />
-        <Stat label="VWAP" value={vwap.toFixed(5)} />
+        <Stat label={t("liquidity.last")} value={last.toFixed(5)} />
+        <Stat label={t("liquidity.sessionHigh")} value={high.toFixed(5)} />
+        <Stat label={t("liquidity.sessionLow")} value={low.toFixed(5)} />
+        <Stat label={t("liquidity.vwap")} value={vwap.toFixed(5)} />
       </div>
     </div>
   );

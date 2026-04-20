@@ -3,6 +3,7 @@
 import useSWR from "swr";
 import { useState } from "react";
 import { apiFetch, API_URL } from "@/lib/api";
+import { useT } from "@/lib/i18n";
 
 interface ReplaySession {
   id: string;
@@ -14,6 +15,7 @@ interface ReplaySession {
 }
 
 export default function ReplayPage() {
+  const { t } = useT();
   const { data, mutate } = useSWR<ReplaySession[]>("/api/replay/sessions", (p: string) =>
     apiFetch<ReplaySession[]>(p),
   );
@@ -42,13 +44,11 @@ export default function ReplayPage() {
 
   return (
     <div>
-      <h1 className="text-2xl font-semibold mb-1">Backtesting / Replay</h1>
-      <p className="text-sm text-muted mb-4">
-        Replay historical sessions and re-run the alert engine against them.
-      </p>
+      <h1 className="text-2xl font-semibold mb-1">{t("replay.title")}</h1>
+      <p className="text-sm text-muted mb-4">{t("replay.subtitle")}</p>
       <div className="border border-border rounded-md p-3 bg-panel/50 mb-4 flex flex-wrap items-end gap-3">
         <label className="text-xs">
-          <div className="text-muted mb-1">Label</div>
+          <div className="text-muted mb-1">{t("replay.label")}</div>
           <input
             className="bg-bg border border-border rounded px-2 py-1 text-sm"
             value={label}
@@ -56,7 +56,7 @@ export default function ReplayPage() {
           />
         </label>
         <label className="text-xs">
-          <div className="text-muted mb-1">Speed</div>
+          <div className="text-muted mb-1">{t("replay.speed")}</div>
           <input
             type="number"
             min={1}
@@ -69,7 +69,7 @@ export default function ReplayPage() {
           onClick={start}
           className="px-3 py-1.5 text-sm bg-accent/20 border border-accent text-accent rounded"
         >
-          Start replay
+          {t("replay.start")}
         </button>
       </div>
       <ul className="space-y-2">
@@ -80,7 +80,7 @@ export default function ReplayPage() {
               <span className="text-xs text-muted">{s.speed}×</span>
               <span className={`text-xs uppercase ${s.state === "running" ? "text-accent" : "text-muted"}`}>{s.state}</span>
               {s.state === "running" && (
-                <button onClick={() => stop(s.id)} className="ml-auto text-xs underline text-bad">stop</button>
+                <button onClick={() => stop(s.id)} className="ml-auto text-xs underline text-bad">{t("common.stop")}</button>
               )}
             </div>
             <div className="text-xs text-muted mt-1">
@@ -88,7 +88,7 @@ export default function ReplayPage() {
             </div>
           </li>
         ))}
-        {(!data || data.length === 0) && <li className="text-sm text-muted">No replay sessions yet.</li>}
+        {(!data || data.length === 0) && <li className="text-sm text-muted">{t("replay.empty")}</li>}
       </ul>
     </div>
   );

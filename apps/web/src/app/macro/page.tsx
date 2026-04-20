@@ -2,9 +2,11 @@
 
 import useSWR from "swr";
 import { apiFetch } from "@/lib/api";
+import { useT } from "@/lib/i18n";
 import type { MacroEvent } from "@fxradar/shared-types";
 
 export default function MacroCalendarPage() {
+  const { t } = useT();
   const { data } = useSWR<MacroEvent[]>("/api/macro/calendar", (p: string) =>
     apiFetch<MacroEvent[]>(p),
   );
@@ -12,8 +14,8 @@ export default function MacroCalendarPage() {
 
   return (
     <div>
-      <h1 className="text-2xl font-semibold mb-1">Macro Calendar</h1>
-      <p className="text-sm text-muted mb-4">Upcoming high-impact events that alter flow bias.</p>
+      <h1 className="text-2xl font-semibold mb-1">{t("macro.title")}</h1>
+      <p className="text-sm text-muted mb-4">{t("macro.subtitle")}</p>
       <div className="space-y-2">
         {events.map((e) => (
           <div key={e.id} className="border border-border rounded-md p-3 bg-panel/50">
@@ -32,11 +34,11 @@ export default function MacroCalendarPage() {
             </div>
             <div className="text-sm mt-1">{e.name}</div>
             <div className="text-xs text-muted">
-              Forecast: {e.forecast ?? "—"} · Previous: {e.previous ?? "—"} · Actual: {e.actual ?? "—"}
+              {t("macro.forecast")}: {e.forecast ?? "—"} · {t("macro.previous")}: {e.previous ?? "—"} · {t("macro.actual")}: {e.actual ?? "—"}
             </div>
           </div>
         ))}
-        {events.length === 0 && <div className="text-sm text-muted">No events.</div>}
+        {events.length === 0 && <div className="text-sm text-muted">{t("macro.noEvents")}</div>}
       </div>
     </div>
   );

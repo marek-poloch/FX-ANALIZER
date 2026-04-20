@@ -4,11 +4,13 @@ import { useEffect, useState } from "react";
 import useSWR from "swr";
 import { apiFetch } from "@/lib/api";
 import { getNewsSocket } from "@/lib/ws";
+import { useT } from "@/lib/i18n";
 import type { NewsItem } from "@fxradar/shared-types";
 
 const CURRENCIES = ["ALL", "USD", "EUR", "GBP", "JPY", "CHF", "CAD", "AUD", "NZD"] as const;
 
 export default function NewsPage() {
+  const { t } = useT();
   const [currency, setCurrency] = useState<(typeof CURRENCIES)[number]>("ALL");
   const path = currency === "ALL" ? "/api/news" : `/api/news?currency=${currency}`;
   const { data, mutate } = useSWR<NewsItem[]>(path, (p: string) => apiFetch<NewsItem[]>(p));
@@ -21,8 +23,8 @@ export default function NewsPage() {
 
   return (
     <div>
-      <h1 className="text-2xl font-semibold mb-1">News Feed</h1>
-      <p className="text-sm text-muted mb-4">Headlines tagged by affected currency.</p>
+      <h1 className="text-2xl font-semibold mb-1">{t("news.title")}</h1>
+      <p className="text-sm text-muted mb-4">{t("news.subtitle")}</p>
 
       <div className="flex gap-2 mb-4 flex-wrap">
         {CURRENCIES.map((c) => (
@@ -33,7 +35,7 @@ export default function NewsPage() {
               currency === c ? "bg-accent/20 border-accent text-accent" : "border-border text-muted"
             }`}
           >
-            {c}
+            {c === "ALL" ? t("common.all") : c}
           </button>
         ))}
       </div>
@@ -52,11 +54,11 @@ export default function NewsPage() {
             </div>
             <div className="text-sm mt-1">{n.title}</div>
             {n.tags.length > 0 && (
-              <div className="text-xs text-muted mt-1">tags: {n.tags.join(", ")}</div>
+              <div className="text-xs text-muted mt-1">{t("news.tags")} {n.tags.join(", ")}</div>
             )}
           </li>
         ))}
-        {(!data || data.length === 0) && <li className="text-sm text-muted">No news yet.</li>}
+        {(!data || data.length === 0) && <li className="text-sm text-muted">{t("news.empty")}</li>}
       </ul>
     </div>
   );

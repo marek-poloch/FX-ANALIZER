@@ -2,8 +2,10 @@
 
 import { useState } from "react";
 import { API_URL } from "@/lib/api";
+import { useT } from "@/lib/i18n";
 
 export default function SettingsPage() {
+  const { t } = useT();
   const [minScore, setMinScore] = useState(50);
   const [minSeverity, setMinSeverity] = useState<"LOW" | "MEDIUM" | "HIGH">("MEDIUM");
   const [channels, setChannels] = useState<string[]>([]);
@@ -14,24 +16,22 @@ export default function SettingsPage() {
   }
 
   async function save() {
-    setStatus("Saving…");
+    setStatus(t("common.saving"));
     const res = await fetch(`${API_URL}/api/alerts/config`, {
       method: "POST",
       headers: { "content-type": "application/json" },
       body: JSON.stringify({ userId: "local", minScore, minSeverity, channels }),
     });
-    setStatus(res.ok ? "Saved ✓" : `Error: ${res.status}`);
+    setStatus(res.ok ? t("common.saved") : `${t("common.error")}: ${res.status}`);
   }
 
   return (
     <div>
-      <h1 className="text-2xl font-semibold mb-1">Alert Configuration</h1>
-      <p className="text-sm text-muted mb-4">
-        Configure alert thresholds and notification channels. Demo mode keeps config in memory.
-      </p>
+      <h1 className="text-2xl font-semibold mb-1">{t("settings.title")}</h1>
+      <p className="text-sm text-muted mb-4">{t("settings.subtitle")}</p>
       <div className="border border-border rounded-md p-4 bg-panel/50 space-y-4 max-w-lg">
         <label className="block text-sm">
-          <div className="text-muted mb-1">Minimum score (0–100)</div>
+          <div className="text-muted mb-1">{t("settings.minScore")}</div>
           <input
             type="range"
             min={0}
@@ -43,7 +43,7 @@ export default function SettingsPage() {
           <div className="font-mono text-xs">{minScore}</div>
         </label>
         <label className="block text-sm">
-          <div className="text-muted mb-1">Minimum severity</div>
+          <div className="text-muted mb-1">{t("settings.minSeverity")}</div>
           <select
             value={minSeverity}
             onChange={(e) => setMinSeverity(e.target.value as "LOW" | "MEDIUM" | "HIGH")}
@@ -53,7 +53,7 @@ export default function SettingsPage() {
           </select>
         </label>
         <div className="text-sm">
-          <div className="text-muted mb-1">Notification channels</div>
+          <div className="text-muted mb-1">{t("settings.channels")}</div>
           <div className="flex flex-wrap gap-2">
             {["telegram", "email", "discord", "slack", "webhook"].map((ch) => (
               <button
@@ -74,7 +74,7 @@ export default function SettingsPage() {
           onClick={save}
           className="px-3 py-1.5 text-sm bg-accent/20 border border-accent text-accent rounded"
         >
-          Save
+          {t("common.save")}
         </button>
         {status && <div className="text-xs text-muted">{status}</div>}
       </div>
