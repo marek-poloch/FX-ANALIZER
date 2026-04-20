@@ -13,6 +13,7 @@ COPY tsconfig.base.json ./
 COPY packages/shared-types packages/shared-types
 COPY apps/web apps/web
 ENV NEXT_TELEMETRY_DISABLED=1
+ENV NEXT_OUTPUT_STANDALONE=1
 RUN pnpm --filter @fxradar/web build
 
 FROM node:20-alpine AS runtime
