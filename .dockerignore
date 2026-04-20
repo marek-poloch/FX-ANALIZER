@@ -1,0 +1,36 @@
+# Never ship host build artifacts or local deps into the Docker context.
+# The deps stage runs `pnpm install` inside the image; if host node_modules
+# leak in via COPY they clash with the already-materialised directories
+# (e.g. `cannot replace to directory .../node_modules/socket.io with file`).
+
+**/node_modules
+**/.next
+**/dist
+**/build
+**/.turbo
+**/.cache
+**/.pnpm-store
+**/*.tsbuildinfo
+
+# Python
+**/__pycache__
+**/*.pyc
+**/.venv
+**/venv
+
+# Git / editor / OS
+.git
+.gitignore
+.vscode
+.idea
+.DS_Store
+Thumbs.db
+
+# Logs & env (env is injected at runtime via docker-compose)
+**/*.log
+.env
+.env.*
+!.env.example
+
+# Docs / tests don't belong in runtime images, but we keep them for build
+# context simplicity. Only hard-exclude the heavy stuff above.
