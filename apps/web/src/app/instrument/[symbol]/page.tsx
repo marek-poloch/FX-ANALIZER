@@ -1,10 +1,16 @@
 "use client";
 
 import useSWR from "swr";
-import { use } from "react";
+import { use, useMemo, useState } from "react";
 import { apiFetch } from "@/lib/api";
 import { formatSymbol } from "@/lib/ui";
 import { useT } from "@/lib/i18n";
+import { TimeframeSelector } from "@/components/TimeframeSelector";
+import {
+  DEFAULT_TIMEFRAME,
+  filterTicksByTimeframe,
+  type TimeframeId,
+} from "@/lib/timeframe";
 import type { MarketTick, SentimentSnapshot, CotReport } from "@fxradar/shared-types";
 
 interface Props {
@@ -14,10 +20,15 @@ interface Props {
 export default function InstrumentDetailPage({ params }: Props) {
   const { t } = useT();
   const { symbol } = use(params);
+  const [tf, setTf] = useState<TimeframeId>(DEFAULT_TIMEFRAME);
   const { data: ticks } = useSWR<MarketTick[]>(
-    `/api/market/${symbol}/ticks?limit=200`,
+    `/api/market/${symbol}/ticks?limit=10000`,
     (p: string) => apiFetch<MarketTick[]>(p),
     { refreshInterval: 2000 },
+  );
+  const windowed = useMemo(
+    () => filterTicksByTimeframe(ticks ?? [], tf),
+    [ticks, tf],
   );
   const { data: sentiment } = useSWR<SentimentSnapshot[]>(
     `/api/sentiment/${symbol}`,
@@ -28,16 +39,19 @@ export default function InstrumentDetailPage({ params }: Props) {
     (p: string) => apiFetch<CotReport[]>(p),
   );
 
-  const last = ticks?.[ticks.length - 1];
+  const last = windowed[windowed.length - 1];
 
   return (
     <div>
       <h1 className="text-2xl font-semibold mb-1 font-mono">{formatSymbol(symbol)}</h1>
-      <p className="text-sm text-muted mb-4">
+      <p className="text-sm text-muted mb-3">
         {t("instrument.price")}: {last?.price?.toFixed(5) ?? "—"} · {last?.dataQuality ?? "—"} · {last?.delayStatus ?? "—"}
       </p>
+      <div className="mb-4">
+        <TimeframeSelector value={tf} onChange={setTf} />
+      </div>
 
-      <Sparkline ticks={ticks ?? []} />
+      <Sparkline ticks={windowed} />
 
       <div className="grid md:grid-cols-2 gap-3 mt-6">
         <div className="border border-border rounded-md p-3 bg-panel/50">

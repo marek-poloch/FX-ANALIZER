@@ -1,13 +1,21 @@
 "use client";
 
+import { useState } from "react";
 import useSWR from "swr";
 import { apiFetch } from "@/lib/api";
 import { formatSymbol } from "@/lib/ui";
 import { useT } from "@/lib/i18n";
+import { TimeframeSelector } from "@/components/TimeframeSelector";
+import {
+  DEFAULT_TIMEFRAME,
+  filterTicksByTimeframe,
+  type TimeframeId,
+} from "@/lib/timeframe";
 import type { Instrument, MarketTick } from "@fxradar/shared-types";
 
 export default function LiquidityPage() {
   const { t } = useT();
+  const [tf, setTf] = useState<TimeframeId>(DEFAULT_TIMEFRAME);
   const { data: instruments } = useSWR<Instrument[]>("/api/instruments", (p: string) =>
     apiFetch<Instrument[]>(p),
   );
@@ -15,37 +23,48 @@ export default function LiquidityPage() {
   return (
     <div>
       <h1 className="text-2xl font-semibold mb-1">{t("liquidity.title")}</h1>
-      <p className="text-sm text-muted mb-4">{t("liquidity.subtitle")}</p>
+      <p className="text-sm text-muted mb-3">{t("liquidity.subtitle")}</p>
+      <div className="mb-4">
+        <TimeframeSelector value={tf} onChange={setTf} />
+      </div>
       <div className="grid md:grid-cols-2 gap-3">
         {(instruments ?? []).map((i) => (
-          <LiquidityCard key={i.symbol} symbol={i.symbol} />
+          <LiquidityCard key={i.symbol} symbol={i.symbol} timeframe={tf} />
         ))}
       </div>
     </div>
   );
 }
 
-function LiquidityCard({ symbol }: { symbol: string }) {
+function LiquidityCard({ symbol, timeframe }: { symbol: string; timeframe: TimeframeId }) {
   const { t } = useT();
+  // Over-fetch so longer lookback windows have data; store caps at 10_000.
   const { data } = useSWR<MarketTick[]>(
-    `/api/market/${symbol}/ticks?limit=500`,
+    `/api/market/${symbol}/ticks?limit=10000`,
     (p: string) => apiFetch<MarketTick[]>(p),
     { refreshInterval: 5000 },
   );
   if (!data || data.length === 0)
-    return <div className="border border-border rounded-md p-3 text-sm text-muted">{formatSymbol(symbol)} — {t("liquidity.noData")}</div>;
+    return (
+      <div className="border border-border rounded-md p-3 text-sm text-muted">
+        {formatSymbol(symbol)} — {t("liquidity.noData")}
+      </div>
+    );
 
-  const prices = data.map((t) => t.price);
+  const windowed = filterTicksByTimeframe(data, timeframe);
+  const prices = windowed.map((x) => x.price);
   const high = Math.max(...prices);
   const low = Math.min(...prices);
   const last = prices[prices.length - 1]!;
-  const vwap = computeVwap(data);
+  const vwap = computeVwap(windowed);
 
   return (
     <div className="border border-border rounded-md p-3 bg-panel/50">
       <div className="flex items-baseline gap-3">
         <span className="font-mono font-semibold">{formatSymbol(symbol)}</span>
-        <span className="text-xs text-muted ml-auto">{data.length} {t("liquidity.ticks")}</span>
+        <span className="text-xs text-muted ml-auto">
+          {windowed.length} {t("liquidity.ticks")}
+        </span>
       </div>
       <div className="grid grid-cols-4 gap-2 mt-2 text-xs">
         <Stat label={t("liquidity.last")} value={last.toFixed(5)} />
